@@ -7,9 +7,6 @@
 <title>YX Design Scanner</title>
 
 <style>
-/* =========================================================
-   BASIC
-========================================================= */
 
 * {
   box-sizing: border-box;
@@ -26,7 +23,6 @@ body {
 body {
   font-family: "Courier New", monospace;
 
-  /* 桌面的感觉，不是之前的灰色网页背景 */
   background:
     radial-gradient(
       circle at 50% 25%,
@@ -61,17 +57,12 @@ body {
   min-height: 720px;
 }
 
-
-/* subtle desk grain */
-
 .desk::after {
   content: "";
   position: absolute;
   inset: 0;
-
   pointer-events: none;
   z-index: 1000;
-
   opacity: .11;
 
   background-image:
@@ -85,24 +76,20 @@ body {
 
 
 /* =========================================================
-   TOP TEXT
+   TEXT
 ========================================================= */
 
 .title {
   position: fixed;
-
   left: 30px;
   top: 27px;
-
   z-index: 900;
 
   font-size: 14px;
   line-height: 1.5;
-
   letter-spacing: 1px;
 
   color: #181511;
-
   pointer-events: none;
 }
 
@@ -112,17 +99,14 @@ body {
 
 .instruction {
   position: fixed;
-
   right: 32px;
   top: 30px;
-
   z-index: 900;
 
   text-align: right;
 
   font-size: 12px;
   line-height: 1.55;
-
   letter-spacing: .7px;
 
   color: rgba(20,15,10,.75);
@@ -150,7 +134,6 @@ body {
 
 .scanner {
   display: block;
-
   width: 100%;
   height: auto;
 
@@ -168,9 +151,7 @@ body {
 
 
 /* =========================================================
-   CRT SCREEN AREA
-
-   透明层覆盖在 scanner 自己的蓝色屏幕上
+   CRT
 ========================================================= */
 
 .crt {
@@ -186,14 +167,10 @@ body {
 
   overflow: hidden;
 
-  border-radius:
-    5% / 8%;
+  border-radius: 5% / 8%;
 
   pointer-events: none;
 }
-
-
-/* 扫描完成后的图 */
 
 .scan-result {
   position: absolute;
@@ -227,9 +204,6 @@ body {
   transform: scale(1);
 }
 
-
-/* CRT scanlines */
-
 .crt-lines {
   position: absolute;
   inset: 0;
@@ -250,9 +224,6 @@ body {
     );
 }
 
-
-/* CRT glow */
-
 .crt-glow {
   position: absolute;
   inset: 0;
@@ -262,14 +233,15 @@ body {
   pointer-events: none;
 
   box-shadow:
-    inset 0 0 28px rgba(52,239,255,.12);
+    inset 0 0 28px
+    rgba(52,239,255,.12);
 
   opacity: .7;
 }
 
 
 /* =========================================================
-   SCREEN TEXT
+   SCREEN MESSAGE
 ========================================================= */
 
 .screen-message {
@@ -287,18 +259,15 @@ body {
   line-height: 1.3;
 
   text-shadow:
-    0 0 7px rgba(73,235,255,.65);
+    0 0 7px
+    rgba(73,235,255,.65);
 
   pointer-events: none;
 }
 
-.screen-message.hidden {
-  opacity: 0;
-}
-
 
 /* =========================================================
-   SCANNING LIGHT
+   SCAN LIGHT
 ========================================================= */
 
 .scan-light {
@@ -331,14 +300,12 @@ body {
     0 0 28px rgba(100,255,255,.5);
 }
 
-
 .crt.scanning .scan-light {
   opacity: 1;
 
   animation:
     scanning 2.2s linear forwards;
 }
-
 
 @keyframes scanning {
 
@@ -351,11 +318,6 @@ body {
   }
 
 }
-
-
-/* =========================================================
-   CRT FLICKER WHILE SCANNING
-========================================================= */
 
 .crt.scanning {
   animation:
@@ -380,10 +342,7 @@ body {
 
 
 /* =========================================================
-   TRAY DROP ZONE
-
-   这是透明的。
-   覆盖在扫描机下面的托盘区域。
+   TRAY
 ========================================================= */
 
 .tray-zone {
@@ -406,11 +365,6 @@ body {
     box-shadow .2s ease;
 }
 
-
-/*
-   当用户拿着作品经过托盘
-*/
-
 .tray-zone.hover {
   background:
     rgba(116,255,221,.09);
@@ -424,9 +378,7 @@ body {
 
 
 /* =========================================================
-   SCAN BUTTON HOTSPOT
-
-   对应机器自己的绿色 SCAN 按钮
+   SCAN BUTTON
 ========================================================= */
 
 .scan-button {
@@ -448,7 +400,6 @@ body {
   border-radius: 4px;
 }
 
-
 .scan-button.ready:hover {
   background:
     rgba(70,255,205,.15);
@@ -460,7 +411,6 @@ body {
   animation:
     buttonPulse 1s ease-in-out infinite;
 }
-
 
 @keyframes buttonPulse {
 
@@ -496,6 +446,8 @@ body {
   user-select: none;
   -webkit-user-select: none;
 
+  transform-origin: center center;
+
   filter:
     drop-shadow(
       0 12px 9px
@@ -507,7 +459,6 @@ body {
     filter .18s ease;
 }
 
-
 .object:hover {
   filter:
     drop-shadow(
@@ -515,7 +466,6 @@ body {
       rgba(30,20,10,.34)
     );
 }
-
 
 .object.dragging {
   z-index: 800;
@@ -533,11 +483,8 @@ body {
 
 
 /* =========================================================
-   STARTING POSITIONS
+   START POSITIONS
 ========================================================= */
-
-
-/* GREEN POSTER */
 
 #greenPoster {
   width: 190px;
@@ -548,9 +495,6 @@ body {
   transform: rotate(-8deg);
 }
 
-
-/* BLUE BOOKLET */
-
 #blueBooklet {
   width: 205px;
 
@@ -559,9 +503,6 @@ body {
 
   transform: rotate(7deg);
 }
-
-
-/* WHITE BOOK */
 
 #whiteBook {
   width: 215px;
@@ -574,7 +515,7 @@ body {
 
 
 /* =========================================================
-   OBJECT WHEN INSERTED
+   INSERTED OBJECT
 ========================================================= */
 
 .object.inserted {
@@ -582,16 +523,16 @@ body {
 
   cursor: default;
 
-  transition:
-    left .4s cubic-bezier(.2,.8,.2,1),
-    top .4s cubic-bezier(.2,.8,.2,1),
-    width .4s cubic-bezier(.2,.8,.2,1),
-    transform .4s cubic-bezier(.2,.8,.2,1);
+  filter:
+    drop-shadow(
+      0 5px 4px
+      rgba(20,15,10,.28)
+    );
 }
 
 
 /* =========================================================
-   STATUS PANEL
+   STATUS
 ========================================================= */
 
 .status-panel {
@@ -604,14 +545,12 @@ body {
 
   font-size: 11px;
   line-height: 1.55;
-
   letter-spacing: .6px;
 
   color: rgba(20,15,10,.7);
 
   pointer-events: none;
 }
-
 
 .status-dot {
   display: inline-block;
@@ -629,7 +568,6 @@ body {
     0 0 6px
     rgba(229,101,37,.6);
 }
-
 
 .status-dot.active {
   background: #40d9a0;
@@ -660,7 +598,9 @@ body {
 
   color: #18130f;
 
-  font-family: "Courier New", monospace;
+  font-family:
+    "Courier New",
+    monospace;
 
   font-size: 11px;
 
@@ -681,13 +621,11 @@ body {
     background .15s ease;
 }
 
-
 .eject.show {
   opacity: 1;
 
   pointer-events: auto;
 }
-
 
 .eject:hover {
   transform:
@@ -711,21 +649,18 @@ body {
 
   #greenPoster {
     width: 120px;
-
     left: 3%;
     top: 12%;
   }
 
   #blueBooklet {
     width: 125px;
-
     right: 2%;
     top: 12%;
   }
 
   #whiteBook {
     width: 135px;
-
     right: 4%;
     bottom: 7%;
   }
@@ -745,13 +680,16 @@ body {
 <div class="desk">
 
 
-  <!-- =====================================================
-       TITLE
-  ====================================================== -->
-
   <div class="title">
-    <strong>YX SCAN SYSTEM</strong><br>
+
+    <strong>
+      YX SCAN SYSTEM
+    </strong>
+
+    <br>
+
     DESIGN ARCHIVE 01
+
   </div>
 
 
@@ -764,15 +702,12 @@ body {
   </div>
 
 
-  <!-- =====================================================
-       SCANNER
-  ====================================================== -->
+  <!-- SCANNER -->
 
   <div
     class="scanner-wrap"
     id="scannerWrap"
   >
-
 
     <img
       src="scanner.png"
@@ -823,7 +758,7 @@ body {
     </div>
 
 
-    <!-- DROP AREA -->
+    <!-- TRAY -->
 
     <div
       class="tray-zone"
@@ -831,7 +766,7 @@ body {
     ></div>
 
 
-    <!-- GREEN SCAN BUTTON -->
+    <!-- SCAN BUTTON -->
 
     <button
       class="scan-button"
@@ -839,14 +774,10 @@ body {
       aria-label="Scan"
     ></button>
 
-
   </div>
 
 
-  <!-- =====================================================
-       OBJECT 01
-       GREEN POSTER
-  ====================================================== -->
+  <!-- GREEN POSTER -->
 
   <img
     src="green-poster.png"
@@ -859,10 +790,7 @@ body {
   >
 
 
-  <!-- =====================================================
-       OBJECT 02
-       BLUE BOOKLET
-  ====================================================== -->
+  <!-- BLUE BOOKLET -->
 
   <img
     src="blue-booklet.png"
@@ -875,10 +803,7 @@ body {
   >
 
 
-  <!-- =====================================================
-       OBJECT 03
-       WHITE BOOK
-  ====================================================== -->
+  <!-- WHITE BOOK -->
 
   <img
     src="white-book.png"
@@ -891,9 +816,7 @@ body {
   >
 
 
-  <!-- =====================================================
-       STATUS
-  ====================================================== -->
+  <!-- STATUS -->
 
   <div
     class="status-panel"
@@ -913,9 +836,7 @@ body {
   </div>
 
 
-  <!-- =====================================================
-       EJECT
-  ====================================================== -->
+  <!-- EJECT -->
 
   <button
     class="eject"
@@ -1002,38 +923,11 @@ let scanning = false;
 
 let scanned = false;
 
+let inserting = false;
+
 let offsetX = 0;
 
 let offsetY = 0;
-
-
-/* =========================================================
-   REMEMBER ORIGINAL POSITIONS
-========================================================= */
-
-objects.forEach(
-  function(obj) {
-
-    obj.dataset.originalLeft =
-      getComputedStyle(obj).left;
-
-    obj.dataset.originalTop =
-      getComputedStyle(obj).top;
-
-    obj.dataset.originalRight =
-      getComputedStyle(obj).right;
-
-    obj.dataset.originalBottom =
-      getComputedStyle(obj).bottom;
-
-    obj.dataset.originalWidth =
-      getComputedStyle(obj).width;
-
-    obj.dataset.originalTransform =
-      getComputedStyle(obj).transform;
-
-  }
-);
 
 
 /* =========================================================
@@ -1049,10 +943,12 @@ objects.forEach(
 
         if (
           scanning ||
-          insertedObject
+          insertedObject ||
+          inserting
         ) {
           return;
         }
+
 
         e.preventDefault();
 
@@ -1080,23 +976,23 @@ objects.forEach(
         );
 
 
-        /*
-          重要：
-          从 right/bottom 定位切换成
-          left/top，保证拖动正常
-        */
-
         obj.style.right =
           "auto";
+
 
         obj.style.bottom =
           "auto";
 
+
         obj.style.left =
-          rect.left + "px";
+          rect.left +
+          "px";
+
 
         obj.style.top =
-          rect.top + "px";
+          rect.top +
+          "px";
+
 
         obj.style.transform =
           "rotate(0deg) scale(1.04)";
@@ -1125,14 +1021,16 @@ document.addEventListener(
       (
         e.clientX -
         offsetX
-      ) + "px";
+      ) +
+      "px";
 
 
     draggingObject.style.top =
       (
         e.clientY -
         offsetY
-      ) + "px";
+      ) +
+      "px";
 
 
     checkTrayHover();
@@ -1154,24 +1052,17 @@ document.addEventListener(
     }
 
 
+    const obj =
+      draggingObject;
+
+
     const shouldInsert =
-      isOverTray(
-        draggingObject
-      );
+      isOverTray(obj);
 
 
-    draggingObject.classList.remove(
+    obj.classList.remove(
       "dragging"
     );
-
-
-    if (shouldInsert) {
-
-      insertObject(
-        draggingObject
-      );
-
-    }
 
 
     draggingObject =
@@ -1182,12 +1073,19 @@ document.addEventListener(
       "hover"
     );
 
+
+    if (shouldInsert) {
+
+      insertObject(obj);
+
+    }
+
   }
 );
 
 
 /* =========================================================
-   IS OBJECT OVER TRAY?
+   CHECK TRAY
 ========================================================= */
 
 function isOverTray(obj) {
@@ -1273,6 +1171,10 @@ function insertObject(obj) {
     obj;
 
 
+  inserting =
+    true;
+
+
   scanned =
     false;
 
@@ -1291,8 +1193,7 @@ function insertObject(obj) {
 
 
   /*
-     根据不同物件稍微控制大小
-     保证不会把机器盖住
+     Determine object size
   */
 
   let insertedWidth;
@@ -1305,7 +1206,7 @@ function insertObject(obj) {
 
     insertedWidth =
       scannerRect.width *
-      .20;
+      .19;
 
   }
 
@@ -1316,7 +1217,7 @@ function insertObject(obj) {
 
     insertedWidth =
       scannerRect.width *
-      .23;
+      .22;
 
   }
 
@@ -1324,18 +1225,14 @@ function insertObject(obj) {
 
     insertedWidth =
       scannerRect.width *
-      .22;
+      .21;
 
   }
 
 
-  obj.style.width =
-    insertedWidth +
-    "px";
-
-
   /*
-     放到 scanner 下方托盘中央
+     STEP 1:
+     Object lands flat on tray
   */
 
   const targetLeft =
@@ -1344,15 +1241,23 @@ function insertObject(obj) {
     insertedWidth / 2;
 
 
-  /*
-     图片高度还会变化，
-     所以先用一个视觉上合适的位置
-  */
-
   const targetTop =
     trayRect.top +
     trayRect.height *
-    .05;
+    .30;
+
+
+  obj.style.transition =
+    "left .45s cubic-bezier(.2,.8,.2,1)," +
+    "top .45s cubic-bezier(.2,.8,.2,1)," +
+    "width .45s cubic-bezier(.2,.8,.2,1)," +
+    "transform .45s cubic-bezier(.2,.8,.2,1)," +
+    "filter .45s ease";
+
+
+  obj.style.width =
+    insertedWidth +
+    "px";
 
 
   obj.style.left =
@@ -1373,22 +1278,32 @@ function insertObject(obj) {
     "auto";
 
 
-  obj.style.transform =
-    "rotate(-2deg)";
-
-
   /*
-     UI state
+     Perspective makes it look
+     like the paper/book lies down
+     on the metal tray.
   */
+
+  obj.style.transform =
+    "perspective(500px) " +
+    "rotateX(58deg) " +
+    "rotateZ(-2deg) " +
+    "scaleY(.88)";
+
 
   screenMessage.innerHTML =
     "OBJECT DETECTED<br>" +
     obj.dataset.name +
-    "<br>READY TO SCAN_";
+    "<br>LOADING_";
 
 
   statusText.textContent =
-    "OBJECT LOADED";
+    "LOADING OBJECT";
+
+
+  instruction.innerHTML =
+    "OBJECT DETECTED<br>" +
+    "LOADING INTO SCANNER";
 
 
   statusDot.classList.add(
@@ -1396,18 +1311,86 @@ function insertObject(obj) {
   );
 
 
-  instruction.innerHTML =
-    "OBJECT LOADED<br>" +
-    "PRESS THE GREEN SCAN BUTTON";
+  /*
+     STEP 2:
+     after landing,
+     slide deeper into machine
+  */
+
+  setTimeout(
+    function() {
+
+      obj.style.transition =
+        "top .75s cubic-bezier(.45,0,.25,1)," +
+        "transform .75s cubic-bezier(.45,0,.25,1)," +
+        "filter .75s ease";
 
 
-  scanButton.classList.add(
-    "ready"
+      obj.style.top =
+        (
+          targetTop -
+          scannerRect.height *
+          .055
+        ) +
+        "px";
+
+
+      obj.style.transform =
+        "perspective(500px) " +
+        "rotateX(66deg) " +
+        "rotateZ(-2deg) " +
+        "scale(.94) " +
+        "scaleY(.80)";
+
+
+      screenMessage.innerHTML =
+        "LOADING OBJECT...<br>" +
+        obj.dataset.name +
+        "<br>PLEASE WAIT_";
+
+    },
+    470
   );
 
 
-  ejectButton.classList.add(
-    "show"
+  /*
+     STEP 3:
+     Ready to scan
+  */
+
+  setTimeout(
+    function() {
+
+      inserting =
+        false;
+
+
+      screenMessage.innerHTML =
+        "OBJECT DETECTED<br>" +
+        obj.dataset.name +
+        "<br>READY TO SCAN_";
+
+
+      statusText.textContent =
+        "OBJECT LOADED";
+
+
+      instruction.innerHTML =
+        "OBJECT LOADED<br>" +
+        "PRESS THE GREEN SCAN BUTTON";
+
+
+      scanButton.classList.add(
+        "ready"
+      );
+
+
+      ejectButton.classList.add(
+        "show"
+      );
+
+    },
+    1250
   );
 
 }
@@ -1423,7 +1406,8 @@ scanButton.addEventListener(
 
     if (
       !insertedObject ||
-      scanning
+      scanning ||
+      inserting
     ) {
       return;
     }
@@ -1488,11 +1472,6 @@ function startScan() {
   );
 
 
-  /*
-     Force browser reflow
-     so animation can restart
-  */
-
   void crt.offsetWidth;
 
 
@@ -1502,16 +1481,36 @@ function startScan() {
 
 
   /*
-     稍微让实体物件往机器里进去一点
+     Push object slightly farther
+     inside while scanning
   */
+
+  const currentTop =
+    parseFloat(
+      insertedObject.style.top
+    );
+
+
+  insertedObject.style.transition =
+    "top .65s ease," +
+    "transform .65s ease";
+
+
+  insertedObject.style.top =
+    (
+      currentTop -
+      18
+    ) +
+    "px";
+
 
   insertedObject.style.transform =
-    "translateY(-12px) rotate(-2deg) scale(.96)";
+    "perspective(500px) " +
+    "rotateX(68deg) " +
+    "rotateZ(-2deg) " +
+    "scale(.90) " +
+    "scaleY(.76)";
 
-
-  /*
-     SCAN COMPLETE
-  */
 
   setTimeout(
     function() {
@@ -1577,7 +1576,7 @@ function finishScan() {
 
 
 /* =========================================================
-   EJECT
+   EJECT BUTTON
 ========================================================= */
 
 ejectButton.addEventListener(
@@ -1586,7 +1585,8 @@ ejectButton.addEventListener(
 
     if (
       !insertedObject ||
-      scanning
+      scanning ||
+      inserting
     ) {
       return;
     }
@@ -1599,7 +1599,7 @@ ejectButton.addEventListener(
 
 
 /* =========================================================
-   EJECT OBJECT
+   EJECT
 ========================================================= */
 
 function ejectObject() {
@@ -1621,25 +1621,61 @@ function ejectObject() {
     "EJECTING";
 
 
+  instruction.innerHTML =
+    "EJECTING OBJECT<br>" +
+    "PLEASE WAIT";
+
+
   ejectButton.classList.remove(
     "show"
   );
 
 
+  scanButton.classList.remove(
+    "ready"
+  );
+
+
   /*
-     先稍微弹出来
+     First:
+     machine pushes object outward
   */
 
-  obj.style.transform =
-    "translateY(15px) rotate(-2deg)";
+  const currentTop =
+    parseFloat(
+      obj.style.top
+    );
 
+
+  obj.style.transition =
+    "top .6s cubic-bezier(.3,.8,.3,1)," +
+    "transform .6s cubic-bezier(.3,.8,.3,1)";
+
+
+  obj.style.top =
+    (
+      currentTop +
+      42
+    ) +
+    "px";
+
+
+  obj.style.transform =
+    "perspective(500px) " +
+    "rotateX(58deg) " +
+    "rotateZ(-2deg) " +
+    "scale(.98) " +
+    "scaleY(.88)";
+
+
+  /*
+     Then return to desk
+  */
 
   setTimeout(
     function() {
 
-      restoreObject(
-        obj
-      );
+      restoreObject(obj);
 
 
       insertedObject =
@@ -1672,16 +1708,15 @@ function ejectObject() {
       scanResult.src =
         "";
 
-
     },
-    400
+    700
   );
 
 }
 
 
 /* =========================================================
-   RESTORE ORIGINAL OBJECT
+   RESTORE OBJECT
 ========================================================= */
 
 function restoreObject(obj) {
@@ -1691,39 +1726,58 @@ function restoreObject(obj) {
   );
 
 
-  obj.style.width =
-    obj.dataset.originalWidth;
+  obj.style.transition =
+    "all .5s cubic-bezier(.2,.8,.2,1)";
 
 
   /*
-     清除拖动产生的 inline positioning
+     Remove all inline positioning.
+     Original CSS position returns.
   */
+
+  obj.style.width =
+    "";
+
 
   obj.style.left =
     "";
 
+
   obj.style.top =
     "";
+
 
   obj.style.right =
     "";
 
+
   obj.style.bottom =
     "";
+
 
   obj.style.transform =
     "";
 
 
-  /*
-     重新使用 CSS 中最开始的位置
-  */
+  obj.style.filter =
+    "";
+
+
+  setTimeout(
+    function() {
+
+      obj.style.transition =
+        "";
+
+    },
+    550
+  );
 
 }
 
 
 /* =========================================================
-   DOUBLE CLICK CRT TO EJECT
+   DOUBLE CLICK SCREEN = EJECT
 ========================================================= */
 
 crt.addEventListener(
@@ -1732,7 +1786,8 @@ crt.addEventListener(
 
     if (
       insertedObject &&
-      !scanning
+      !scanning &&
+      !inserting
     ) {
 
       ejectObject();
