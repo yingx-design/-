@@ -1,1 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>YX Design Scanner</title>
+
+<style>
+/* =========================================================
+   BASIC
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Courier New", monospace;
+
+  /* 桌面的感觉，不是之前的灰色网页背景 */
+  background:
+    radial-gradient(
+      circle at 50% 25%,
+      rgba(255,255,255,.30),
+      transparent 42%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(110,74,42,.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      #b99d7d,
+      #aa8c6d
+    );
+
+  background-size:
+    auto,
+    95px 100%,
+    auto;
+}
+
+
+/* =========================================================
+   DESK
+========================================================= */
+
+.desk {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 720px;
+}
+
+
+/* subtle desk grain */
+
+.desk::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+  z-index: 1000;
+
+  opacity: .11;
+
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(255,255,255,.15) 4px
+    );
+}
+
+
+/* =========================================================
+   TOP TEXT
+========================================================= */
+
+.title {
+  position: fixed;
+
+  left: 30px;
+  top: 27px;
+
+  z-index: 900;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  letter-spacing: 1px;
+
+  color: #181511;
+
+  pointer-events: none;
+}
+
+.title strong {
+  font-size: 17px;
+}
+
+.instruction {
+  position: fixed;
+
+  right: 32px;
+  top: 30px;
+
+  z-index: 900;
+
+  text-align: right;
+
+  font-size: 12px;
+  line-height: 1.55;
+
+  letter-spacing: .7px;
+
+  color: rgba(20,15,10,.75);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   SCANNER
+========================================================= */
+
+.scanner-wrap {
+  position: absolute;
+
+  left: 50%;
+  top: 49%;
+
+  width: min(690px, 54vw);
+
+  transform: translate(-50%, -50%);
+
+  z-index: 20;
+}
+
+.scanner {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  position: relative;
+  z-index: 10;
+
+  pointer-events: none;
+
+  filter:
+    drop-shadow(
+      0 24px 24px
+      rgba(40,25,10,.32)
+    );
+}
+
+
+/* =========================================================
+   CRT SCREEN AREA
+
+   透明层覆盖在 scanner 自己的蓝色屏幕上
+========================================================= */
+
+.crt {
+  position: absolute;
+
+  left: 17.7%;
+  top: 12.4%;
+
+  width: 69.3%;
+  height: 38.3%;
+
+  z-index: 12;
+
+  overflow: hidden;
+
+  border-radius:
+    5% / 8%;
+
+  pointer-events: none;
+}
+
+
+/* 扫描完成后的图 */
+
+.scan-result {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  padding: 4%;
+
+  opacity: 0;
+
+  transform: scale(.97);
+
+  mix-blend-mode: screen;
+
+  filter:
+    contrast(1.05)
+    brightness(.95);
+
+  transition:
+    opacity .5s ease,
+    transform .6s ease;
+}
+
+.scan-result.show {
+  opacity: .90;
+  transform: scale(1);
+}
+
+
+/* CRT scanlines */
+
+.crt-lines {
+  position: absolute;
+  inset: 0;
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  opacity: .20;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.08) 0px,
+      rgba(255,255,255,.08) 1px,
+      rgba(0,0,0,.08) 2px,
+      rgba(0,0,0,.08) 4px
+    );
+}
+
+
+/* CRT glow */
+
+.crt-glow {
+  position: absolute;
+  inset: 0;
+
+  z-index: 9;
+
+  pointer-events: none;
+
+  box-shadow:
+    inset 0 0 28px rgba(52,239,255,.12);
+
+  opacity: .7;
+}
+
+
+/* =========================================================
+   SCREEN TEXT
+========================================================= */
+
+.screen-message {
+  position: absolute;
+
+  left: 8%;
+  bottom: 7%;
+
+  z-index: 20;
+
+  color: #9efaff;
+
+  font-size: clamp(8px, .8vw, 12px);
+
+  line-height: 1.3;
+
+  text-shadow:
+    0 0 7px rgba(73,235,255,.65);
+
+  pointer-events: none;
+}
+
+.screen-message.hidden {
+  opacity: 0;
+}
+
+
+/* =========================================================
+   SCANNING LIGHT
+========================================================= */
+
+.scan-light {
+  position: absolute;
+
+  left: 0;
+  top: -8%;
+
+  width: 100%;
+  height: 7%;
+
+  z-index: 30;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0),
+      rgba(130,255,255,.25),
+      rgba(170,255,255,.95),
+      rgba(130,255,255,.25),
+      rgba(255,255,255,0)
+    );
+
+  box-shadow:
+    0 0 15px rgba(100,255,255,.8),
+    0 0 28px rgba(100,255,255,.5);
+}
+
+
+.crt.scanning .scan-light {
+  opacity: 1;
+
+  animation:
+    scanning 2.2s linear forwards;
+}
+
+
+@keyframes scanning {
+
+  0% {
+    top: -8%;
+  }
+
+  100% {
+    top: 102%;
+  }
+
+}
+
+
+/* =========================================================
+   CRT FLICKER WHILE SCANNING
+========================================================= */
+
+.crt.scanning {
+  animation:
+    crtFlicker .14s steps(2) infinite;
+}
+
+@keyframes crtFlicker {
+
+  0% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.14);
+  }
+
+  100% {
+    filter: brightness(.96);
+  }
+
+}
+
+
+/* =========================================================
+   TRAY DROP ZONE
+
+   这是透明的。
+   覆盖在扫描机下面的托盘区域。
+========================================================= */
+
+.tray-zone {
+  position: absolute;
+
+  left: 20%;
+  top: 63%;
+
+  width: 60%;
+  height: 18%;
+
+  z-index: 60;
+
+  border-radius: 8px;
+
+  pointer-events: none;
+
+  transition:
+    background .2s ease,
+    box-shadow .2s ease;
+}
+
+
+/*
+   当用户拿着作品经过托盘
+*/
+
+.tray-zone.hover {
+  background:
+    rgba(116,255,221,.09);
+
+  box-shadow:
+    inset 0 0 0 2px
+    rgba(100,255,220,.38),
+    0 0 25px
+    rgba(100,255,220,.18);
+}
+
+
+/* =========================================================
+   SCAN BUTTON HOTSPOT
+
+   对应机器自己的绿色 SCAN 按钮
+========================================================= */
+
+.scan-button {
+  position: absolute;
+
+  left: 64.5%;
+  top: 55%;
+
+  width: 8.5%;
+  height: 6.5%;
+
+  z-index: 100;
+
+  cursor: pointer;
+
+  border: none;
+  background: transparent;
+
+  border-radius: 4px;
+}
+
+
+.scan-button.ready:hover {
+  background:
+    rgba(70,255,205,.15);
+
+  box-shadow:
+    0 0 17px
+    rgba(70,255,205,.65);
+
+  animation:
+    buttonPulse 1s ease-in-out infinite;
+}
+
+
+@keyframes buttonPulse {
+
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px
+      rgba(70,255,205,.35);
+  }
+
+  50% {
+    box-shadow:
+      0 0 20px
+      rgba(70,255,205,.9);
+  }
+
+}
+
+
+/* =========================================================
+   OBJECTS
+========================================================= */
+
+.object {
+  position: absolute;
+
+  z-index: 200;
+
+  object-fit: contain;
+
+  cursor: grab;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  filter:
+    drop-shadow(
+      0 12px 9px
+      rgba(30,20,10,.28)
+    );
+
+  transition:
+    transform .18s ease,
+    filter .18s ease;
+}
+
+
+.object:hover {
+  filter:
+    drop-shadow(
+      0 17px 12px
+      rgba(30,20,10,.34)
+    );
+}
+
+
+.object.dragging {
+  z-index: 800;
+
+  cursor: grabbing;
+
+  transition: none;
+
+  filter:
+    drop-shadow(
+      0 25px 18px
+      rgba(30,20,10,.35)
+    );
+}
+
+
+/* =========================================================
+   STARTING POSITIONS
+========================================================= */
+
+
+/* GREEN POSTER */
+
+#greenPoster {
+  width: 190px;
+
+  left: 5%;
+  top: 18%;
+
+  transform: rotate(-8deg);
+}
+
+
+/* BLUE BOOKLET */
+
+#blueBooklet {
+  width: 205px;
+
+  right: 5%;
+  top: 16%;
+
+  transform: rotate(7deg);
+}
+
+
+/* WHITE BOOK */
+
+#whiteBook {
+  width: 215px;
+
+  right: 7%;
+  bottom: 6%;
+
+  transform: rotate(-5deg);
+}
+
+
+/* =========================================================
+   OBJECT WHEN INSERTED
+========================================================= */
+
+.object.inserted {
+  z-index: 55;
+
+  cursor: default;
+
+  transition:
+    left .4s cubic-bezier(.2,.8,.2,1),
+    top .4s cubic-bezier(.2,.8,.2,1),
+    width .4s cubic-bezier(.2,.8,.2,1),
+    transform .4s cubic-bezier(.2,.8,.2,1);
+}
+
+
+/* =========================================================
+   STATUS PANEL
+========================================================= */
+
+.status-panel {
+  position: fixed;
+
+  left: 30px;
+  bottom: 28px;
+
+  z-index: 900;
+
+  font-size: 11px;
+  line-height: 1.55;
+
+  letter-spacing: .6px;
+
+  color: rgba(20,15,10,.7);
+
+  pointer-events: none;
+}
+
+
+.status-dot {
+  display: inline-block;
+
+  width: 7px;
+  height: 7px;
+
+  margin-right: 6px;
+
+  border-radius: 50%;
+
+  background: #e56525;
+
+  box-shadow:
+    0 0 6px
+    rgba(229,101,37,.6);
+}
+
+
+.status-dot.active {
+  background: #40d9a0;
+
+  box-shadow:
+    0 0 8px
+    rgba(64,217,160,.8);
+}
+
+
+/* =========================================================
+   EJECT
+========================================================= */
+
+.eject {
+  position: fixed;
+
+  right: 31px;
+  bottom: 28px;
+
+  z-index: 900;
+
+  border: 1px solid
+    rgba(25,20,15,.5);
+
+  background:
+    rgba(236,222,199,.8);
+
+  color: #18130f;
+
+  font-family: "Courier New", monospace;
+
+  font-size: 11px;
+
+  letter-spacing: 1px;
+
+  padding:
+    9px 15px;
+
+  cursor: pointer;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity .25s ease,
+    transform .15s ease,
+    background .15s ease;
+}
+
+
+.eject.show {
+  opacity: 1;
+
+  pointer-events: auto;
+}
+
+
+.eject:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    #f1e4cf;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .scanner-wrap {
+    width: 82vw;
+    top: 46%;
+  }
+
+  #greenPoster {
+    width: 120px;
+
+    left: 3%;
+    top: 12%;
+  }
+
+  #blueBooklet {
+    width: 125px;
+
+    right: 2%;
+    top: 12%;
+  }
+
+  #whiteBook {
+    width: 135px;
+
+    right: 4%;
+    bottom: 7%;
+  }
+
+  .instruction {
+    display: none;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="desk">
+
+
+  <!-- =====================================================
+       TITLE
+  ====================================================== -->
+
+  <div class="title">
+    <strong>YX SCAN SYSTEM</strong><br>
+    DESIGN ARCHIVE 01
+  </div>
+
+
+  <div
+    class="instruction"
+    id="instruction"
+  >
+    PICK UP AN OBJECT<br>
+    DRAG IT INTO THE SCANNER
+  </div>
+
+
+  <!-- =====================================================
+       SCANNER
+  ====================================================== -->
+
+  <div
+    class="scanner-wrap"
+    id="scannerWrap"
+  >
+
+
+    <img
+      src="scanner.png"
+      class="scanner"
+      draggable="false"
+      alt="Scanner"
+    >
+
+
+    <!-- CRT -->
+
+    <div
+      class="crt"
+      id="crt"
+    >
+
+      <img
+        class="scan-result"
+        id="scanResult"
+        src=""
+        alt=""
+      >
+
+
+      <div
+        class="scan-light"
+      ></div>
+
+
+      <div
+        class="crt-glow"
+      ></div>
+
+
+      <div
+        class="crt-lines"
+      ></div>
+
+
+      <div
+        class="screen-message"
+        id="screenMessage"
+      >
+        INSERT AN OBJECT<br>
+        READY_
+      </div>
+
+    </div>
+
+
+    <!-- DROP AREA -->
+
+    <div
+      class="tray-zone"
+      id="trayZone"
+    ></div>
+
+
+    <!-- GREEN SCAN BUTTON -->
+
+    <button
+      class="scan-button"
+      id="scanButton"
+      aria-label="Scan"
+    ></button>
+
+
+  </div>
+
+
+  <!-- =====================================================
+       OBJECT 01
+       GREEN POSTER
+  ====================================================== -->
+
+  <img
+    src="green-poster.png"
+    class="object"
+    id="greenPoster"
+    data-name="GREEN"
+    data-result="green-scan.png"
+    draggable="false"
+    alt="Green Poster"
+  >
+
+
+  <!-- =====================================================
+       OBJECT 02
+       BLUE BOOKLET
+  ====================================================== -->
+
+  <img
+    src="blue-booklet.png"
+    class="object"
+    id="blueBooklet"
+    data-name="MULTIPLE FAIRS"
+    data-result="blue-scan.png"
+    draggable="false"
+    alt="Blue Booklet"
+  >
+
+
+  <!-- =====================================================
+       OBJECT 03
+       WHITE BOOK
+  ====================================================== -->
+
+  <img
+    src="white-book.png"
+    class="object"
+    id="whiteBook"
+    data-name="DOPAMINE"
+    data-result="pink-scan.png"
+    draggable="false"
+    alt="Dopamine Book"
+  >
+
+
+  <!-- =====================================================
+       STATUS
+  ====================================================== -->
+
+  <div
+    class="status-panel"
+  >
+
+    <span
+      class="status-dot"
+      id="statusDot"
+    ></span>
+
+    <span
+      id="statusText"
+    >
+      WAITING FOR OBJECT
+    </span>
+
+  </div>
+
+
+  <!-- =====================================================
+       EJECT
+  ====================================================== -->
+
+  <button
+    class="eject"
+    id="ejectButton"
+  >
+    EJECT OBJECT
+  </button>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const objects =
+  document.querySelectorAll(
+    ".object"
+  );
+
+const trayZone =
+  document.getElementById(
+    "trayZone"
+  );
+
+const scannerWrap =
+  document.getElementById(
+    "scannerWrap"
+  );
+
+const scanButton =
+  document.getElementById(
+    "scanButton"
+  );
+
+const crt =
+  document.getElementById(
+    "crt"
+  );
+
+const scanResult =
+  document.getElementById(
+    "scanResult"
+  );
+
+const screenMessage =
+  document.getElementById(
+    "screenMessage"
+  );
+
+const instruction =
+  document.getElementById(
+    "instruction"
+  );
+
+const statusText =
+  document.getElementById(
+    "statusText"
+  );
+
+const statusDot =
+  document.getElementById(
+    "statusDot"
+  );
+
+const ejectButton =
+  document.getElementById(
+    "ejectButton"
+  );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let draggingObject = null;
+
+let insertedObject = null;
+
+let scanning = false;
+
+let scanned = false;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
+
+/* =========================================================
+   REMEMBER ORIGINAL POSITIONS
+========================================================= */
+
+objects.forEach(
+  function(obj) {
+
+    obj.dataset.originalLeft =
+      getComputedStyle(obj).left;
+
+    obj.dataset.originalTop =
+      getComputedStyle(obj).top;
+
+    obj.dataset.originalRight =
+      getComputedStyle(obj).right;
+
+    obj.dataset.originalBottom =
+      getComputedStyle(obj).bottom;
+
+    obj.dataset.originalWidth =
+      getComputedStyle(obj).width;
+
+    obj.dataset.originalTransform =
+      getComputedStyle(obj).transform;
+
+  }
+);
+
+
+/* =========================================================
+   DRAG START
+========================================================= */
+
+objects.forEach(
+  function(obj) {
+
+    obj.addEventListener(
+      "mousedown",
+      function(e) {
+
+        if (
+          scanning ||
+          insertedObject
+        ) {
+          return;
+        }
+
+        e.preventDefault();
+
+
+        draggingObject =
+          obj;
+
+
+        const rect =
+          obj.getBoundingClientRect();
+
+
+        offsetX =
+          e.clientX -
+          rect.left;
+
+
+        offsetY =
+          e.clientY -
+          rect.top;
+
+
+        obj.classList.add(
+          "dragging"
+        );
+
+
+        /*
+          重要：
+          从 right/bottom 定位切换成
+          left/top，保证拖动正常
+        */
+
+        obj.style.right =
+          "auto";
+
+        obj.style.bottom =
+          "auto";
+
+        obj.style.left =
+          rect.left + "px";
+
+        obj.style.top =
+          rect.top + "px";
+
+        obj.style.transform =
+          "rotate(0deg) scale(1.04)";
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   DRAG MOVE
+========================================================= */
+
+document.addEventListener(
+  "mousemove",
+  function(e) {
+
+    if (!draggingObject) {
+      return;
+    }
+
+
+    draggingObject.style.left =
+      (
+        e.clientX -
+        offsetX
+      ) + "px";
+
+
+    draggingObject.style.top =
+      (
+        e.clientY -
+        offsetY
+      ) + "px";
+
+
+    checkTrayHover();
+
+  }
+);
+
+
+/* =========================================================
+   DRAG END
+========================================================= */
+
+document.addEventListener(
+  "mouseup",
+  function() {
+
+    if (!draggingObject) {
+      return;
+    }
+
+
+    const shouldInsert =
+      isOverTray(
+        draggingObject
+      );
+
+
+    draggingObject.classList.remove(
+      "dragging"
+    );
+
+
+    if (shouldInsert) {
+
+      insertObject(
+        draggingObject
+      );
+
+    }
+
+
+    draggingObject =
+      null;
+
+
+    trayZone.classList.remove(
+      "hover"
+    );
+
+  }
+);
+
+
+/* =========================================================
+   IS OBJECT OVER TRAY?
+========================================================= */
+
+function isOverTray(obj) {
+
+  const objectRect =
+    obj.getBoundingClientRect();
+
+
+  const trayRect =
+    trayZone.getBoundingClientRect();
+
+
+  const centerX =
+    objectRect.left +
+    objectRect.width / 2;
+
+
+  const centerY =
+    objectRect.top +
+    objectRect.height / 2;
+
+
+  return (
+
+    centerX >
+    trayRect.left &&
+
+    centerX <
+    trayRect.right &&
+
+    centerY >
+    trayRect.top &&
+
+    centerY <
+    trayRect.bottom
+
+  );
+
+}
+
+
+/* =========================================================
+   TRAY HOVER
+========================================================= */
+
+function checkTrayHover() {
+
+  if (!draggingObject) {
+    return;
+  }
+
+
+  if (
+    isOverTray(
+      draggingObject
+    )
+  ) {
+
+    trayZone.classList.add(
+      "hover"
+    );
+
+  }
+
+  else {
+
+    trayZone.classList.remove(
+      "hover"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   INSERT OBJECT
+========================================================= */
+
+function insertObject(obj) {
+
+  insertedObject =
+    obj;
+
+
+  scanned =
+    false;
+
+
+  const scannerRect =
+    scannerWrap.getBoundingClientRect();
+
+
+  const trayRect =
+    trayZone.getBoundingClientRect();
+
+
+  obj.classList.add(
+    "inserted"
+  );
+
+
+  /*
+     根据不同物件稍微控制大小
+     保证不会把机器盖住
+  */
+
+  let insertedWidth;
+
+
+  if (
+    obj.id ===
+    "greenPoster"
+  ) {
+
+    insertedWidth =
+      scannerRect.width *
+      .20;
+
+  }
+
+  else if (
+    obj.id ===
+    "blueBooklet"
+  ) {
+
+    insertedWidth =
+      scannerRect.width *
+      .23;
+
+  }
+
+  else {
+
+    insertedWidth =
+      scannerRect.width *
+      .22;
+
+  }
+
+
+  obj.style.width =
+    insertedWidth +
+    "px";
+
+
+  /*
+     放到 scanner 下方托盘中央
+  */
+
+  const targetLeft =
+    trayRect.left +
+    trayRect.width / 2 -
+    insertedWidth / 2;
+
+
+  /*
+     图片高度还会变化，
+     所以先用一个视觉上合适的位置
+  */
+
+  const targetTop =
+    trayRect.top +
+    trayRect.height *
+    .05;
+
+
+  obj.style.left =
+    targetLeft +
+    "px";
+
+
+  obj.style.top =
+    targetTop +
+    "px";
+
+
+  obj.style.right =
+    "auto";
+
+
+  obj.style.bottom =
+    "auto";
+
+
+  obj.style.transform =
+    "rotate(-2deg)";
+
+
+  /*
+     UI state
+  */
+
+  screenMessage.innerHTML =
+    "OBJECT DETECTED<br>" +
+    obj.dataset.name +
+    "<br>READY TO SCAN_";
+
+
+  statusText.textContent =
+    "OBJECT LOADED";
+
+
+  statusDot.classList.add(
+    "active"
+  );
+
+
+  instruction.innerHTML =
+    "OBJECT LOADED<br>" +
+    "PRESS THE GREEN SCAN BUTTON";
+
+
+  scanButton.classList.add(
+    "ready"
+  );
+
+
+  ejectButton.classList.add(
+    "show"
+  );
+
+}
+
+
+/* =========================================================
+   SCAN BUTTON
+========================================================= */
+
+scanButton.addEventListener(
+  "click",
+  function() {
+
+    if (
+      !insertedObject ||
+      scanning
+    ) {
+      return;
+    }
+
+
+    startScan();
+
+  }
+);
+
+
+/* =========================================================
+   START SCAN
+========================================================= */
+
+function startScan() {
+
+  scanning =
+    true;
+
+
+  scanned =
+    false;
+
+
+  scanButton.classList.remove(
+    "ready"
+  );
+
+
+  ejectButton.classList.remove(
+    "show"
+  );
+
+
+  scanResult.classList.remove(
+    "show"
+  );
+
+
+  scanResult.src =
+    insertedObject.dataset.result;
+
+
+  screenMessage.innerHTML =
+    "SCANNING OBJECT...<br>" +
+    insertedObject.dataset.name +
+    "<br>PROCESSING_";
+
+
+  statusText.textContent =
+    "SCANNING";
+
+
+  instruction.innerHTML =
+    "SCANNING...<br>" +
+    "PLEASE WAIT";
+
+
+  crt.classList.remove(
+    "scanning"
+  );
+
+
+  /*
+     Force browser reflow
+     so animation can restart
+  */
+
+  void crt.offsetWidth;
+
+
+  crt.classList.add(
+    "scanning"
+  );
+
+
+  /*
+     稍微让实体物件往机器里进去一点
+  */
+
+  insertedObject.style.transform =
+    "translateY(-12px) rotate(-2deg) scale(.96)";
+
+
+  /*
+     SCAN COMPLETE
+  */
+
+  setTimeout(
+    function() {
+
+      finishScan();
+
+    },
+    2250
+  );
+
+}
+
+
+/* =========================================================
+   FINISH SCAN
+========================================================= */
+
+function finishScan() {
+
+  crt.classList.remove(
+    "scanning"
+  );
+
+
+  scanResult.classList.add(
+    "show"
+  );
+
+
+  screenMessage.innerHTML =
+    "SCAN COMPLETE ✓<br>" +
+    insertedObject.dataset.name +
+    "<br>300 DPI / RGB";
+
+
+  statusText.textContent =
+    "SCAN COMPLETE";
+
+
+  statusDot.classList.add(
+    "active"
+  );
+
+
+  instruction.innerHTML =
+    "SCAN COMPLETE<br>" +
+    "EJECT TO SCAN ANOTHER";
+
+
+  ejectButton.classList.add(
+    "show"
+  );
+
+
+  scanning =
+    false;
+
+
+  scanned =
+    true;
+
+}
+
+
+/* =========================================================
+   EJECT
+========================================================= */
+
+ejectButton.addEventListener(
+  "click",
+  function() {
+
+    if (
+      !insertedObject ||
+      scanning
+    ) {
+      return;
+    }
+
+
+    ejectObject();
+
+  }
+);
+
+
+/* =========================================================
+   EJECT OBJECT
+========================================================= */
+
+function ejectObject() {
+
+  const obj =
+    insertedObject;
+
+
+  scanResult.classList.remove(
+    "show"
+  );
+
+
+  screenMessage.innerHTML =
+    "EJECTING OBJECT...";
+
+
+  statusText.textContent =
+    "EJECTING";
+
+
+  ejectButton.classList.remove(
+    "show"
+  );
+
+
+  /*
+     先稍微弹出来
+  */
+
+  obj.style.transform =
+    "translateY(15px) rotate(-2deg)";
+
+
+  setTimeout(
+    function() {
+
+      restoreObject(
+        obj
+      );
+
+
+      insertedObject =
+        null;
+
+
+      scanned =
+        false;
+
+
+      statusDot.classList.remove(
+        "active"
+      );
+
+
+      statusText.textContent =
+        "WAITING FOR OBJECT";
+
+
+      screenMessage.innerHTML =
+        "INSERT AN OBJECT<br>" +
+        "READY_";
+
+
+      instruction.innerHTML =
+        "PICK UP AN OBJECT<br>" +
+        "DRAG IT INTO THE SCANNER";
+
+
+      scanResult.src =
+        "";
+
+
+    },
+    400
+  );
+
+}
+
+
+/* =========================================================
+   RESTORE ORIGINAL OBJECT
+========================================================= */
+
+function restoreObject(obj) {
+
+  obj.classList.remove(
+    "inserted"
+  );
+
+
+  obj.style.width =
+    obj.dataset.originalWidth;
+
+
+  /*
+     清除拖动产生的 inline positioning
+  */
+
+  obj.style.left =
+    "";
+
+  obj.style.top =
+    "";
+
+  obj.style.right =
+    "";
+
+  obj.style.bottom =
+    "";
+
+  obj.style.transform =
+    "";
+
+
+  /*
+     重新使用 CSS 中最开始的位置
+  */
+
+}
+
+
+/* =========================================================
+   DOUBLE CLICK CRT TO EJECT
+========================================================= */
+
+crt.addEventListener(
+  "dblclick",
+  function() {
+
+    if (
+      insertedObject &&
+      !scanning
+    ) {
+
+      ejectObject();
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
