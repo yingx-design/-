@@ -302,9 +302,7 @@ body {
 
 .crt.scanning .scan-light {
   opacity: 1;
-
-  animation:
-    scanning 2.2s linear forwards;
+  animation: scanning 2.2s linear forwards;
 }
 
 @keyframes scanning {
@@ -320,8 +318,7 @@ body {
 }
 
 .crt.scanning {
-  animation:
-    crtFlicker .14s steps(2) infinite;
+  animation: crtFlicker .14s steps(2) infinite;
 }
 
 @keyframes crtFlicker {
@@ -366,14 +363,11 @@ body {
 }
 
 .tray-zone.hover {
-  background:
-    rgba(116,255,221,.09);
+  background: rgba(116,255,221,.09);
 
   box-shadow:
-    inset 0 0 0 2px
-    rgba(100,255,220,.38),
-    0 0 25px
-    rgba(100,255,220,.18);
+    inset 0 0 0 2px rgba(100,255,220,.38),
+    0 0 25px rgba(100,255,220,.18);
 }
 
 
@@ -401,15 +395,12 @@ body {
 }
 
 .scan-button.ready:hover {
-  background:
-    rgba(70,255,205,.15);
+  background: rgba(70,255,205,.15);
 
   box-shadow:
-    0 0 17px
-    rgba(70,255,205,.65);
+    0 0 17px rgba(70,255,205,.65);
 
-  animation:
-    buttonPulse 1s ease-in-out infinite;
+  animation: buttonPulse 1s ease-in-out infinite;
 }
 
 @keyframes buttonPulse {
@@ -417,14 +408,12 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 8px
-      rgba(70,255,205,.35);
+      0 0 8px rgba(70,255,205,.35);
   }
 
   50% {
     box-shadow:
-      0 0 20px
-      rgba(70,255,205,.9);
+      0 0 20px rgba(70,255,205,.9);
   }
 
 }
@@ -532,6 +521,197 @@ body {
 
 
 /* =========================================================
+   LARGE SCAN PREVIEW — NEW
+========================================================= */
+
+.large-preview {
+  position: fixed;
+
+  left: 4%;
+  top: 50%;
+
+  width: min(310px, 20vw);
+  height: 55vh;
+
+  transform:
+    translateY(-44%)
+    scale(.94);
+
+  z-index: 500;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity .45s ease,
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    visibility .45s;
+
+  cursor: zoom-in;
+}
+
+.large-preview.show {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+
+  transform:
+    translateY(-44%)
+    scale(1);
+}
+
+.large-preview-label {
+  font-size: 10px;
+
+  letter-spacing: 1px;
+
+  margin-bottom: 9px;
+
+  color: rgba(20,15,10,.72);
+}
+
+.large-preview-frame {
+  position: relative;
+
+  width: 100%;
+  height: calc(100% - 25px);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.large-preview img {
+  display: block;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 15px 15px
+      rgba(30,20,10,.20)
+    );
+
+  transition:
+    transform .25s ease,
+    filter .25s ease;
+}
+
+.large-preview:hover img {
+  transform: scale(1.025);
+
+  filter:
+    drop-shadow(
+      0 18px 18px
+      rgba(30,20,10,.27)
+    );
+}
+
+.large-preview-hint {
+  margin-top: 8px;
+
+  font-size: 9px;
+
+  letter-spacing: .7px;
+
+  color: rgba(20,15,10,.55);
+}
+
+
+/* =========================================================
+   FULLSCREEN PREVIEW — NEW
+========================================================= */
+
+.preview-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 3000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 55px;
+
+  background:
+    rgba(37,28,20,.78);
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  cursor: zoom-out;
+
+  transition:
+    opacity .3s ease,
+    visibility .3s;
+}
+
+.preview-overlay.show {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+.preview-overlay img {
+  display: block;
+
+  max-width: 86vw;
+  max-height: 86vh;
+
+  object-fit: contain;
+
+  transform: scale(.95);
+
+  filter:
+    drop-shadow(
+      0 25px 35px
+      rgba(0,0,0,.4)
+    );
+
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1);
+}
+
+.preview-overlay.show img {
+  transform: scale(1);
+}
+
+.preview-close {
+  position: absolute;
+
+  right: 28px;
+  top: 24px;
+
+  color: rgba(255,255,255,.85);
+
+  font-size: 11px;
+
+  letter-spacing: 1px;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
    STATUS
 ========================================================= */
 
@@ -628,11 +808,9 @@ body {
 }
 
 .eject:hover {
-  transform:
-    translateY(-2px);
+  transform: translateY(-2px);
 
-  background:
-    #f1e4cf;
+  background: #f1e4cf;
 }
 
 
@@ -669,6 +847,21 @@ body {
     display: none;
   }
 
+  .large-preview {
+    left: 15px;
+    top: auto;
+    bottom: 60px;
+
+    width: 145px;
+    height: 220px;
+
+    transform: scale(.94);
+  }
+
+  .large-preview.show {
+    transform: scale(1);
+  }
+
 }
 
 </style>
@@ -702,7 +895,9 @@ body {
   </div>
 
 
-  <!-- SCANNER -->
+  <!-- =====================================================
+       SCANNER
+  ====================================================== -->
 
   <div
     class="scanner-wrap"
@@ -777,7 +972,9 @@ body {
   </div>
 
 
-  <!-- GREEN POSTER -->
+  <!-- =====================================================
+       OBJECTS
+  ====================================================== -->
 
   <img
     src="green-poster.png"
@@ -790,8 +987,6 @@ body {
   >
 
 
-  <!-- BLUE BOOKLET -->
-
   <img
     src="blue-booklet.png"
     class="object"
@@ -802,8 +997,6 @@ body {
     alt="Blue Booklet"
   >
 
-
-  <!-- WHITE BOOK -->
 
   <img
     src="white-book.png"
@@ -816,7 +1009,48 @@ body {
   >
 
 
-  <!-- STATUS -->
+  <!-- =====================================================
+       LARGE RESULT PREVIEW
+  ====================================================== -->
+
+  <div
+    class="large-preview"
+    id="largePreview"
+  >
+
+    <div
+      class="large-preview-label"
+      id="largePreviewLabel"
+    >
+      SCANNED OUTPUT
+    </div>
+
+
+    <div
+      class="large-preview-frame"
+    >
+
+      <img
+        src=""
+        id="largePreviewImage"
+        alt="Scanned output"
+      >
+
+    </div>
+
+
+    <div
+      class="large-preview-hint"
+    >
+      CLICK TO ENLARGE ↗
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       STATUS
+  ====================================================== -->
 
   <div
     class="status-panel"
@@ -836,7 +1070,9 @@ body {
   </div>
 
 
-  <!-- EJECT -->
+  <!-- =====================================================
+       EJECT
+  ====================================================== -->
 
   <button
     class="eject"
@@ -845,6 +1081,30 @@ body {
     EJECT OBJECT
   </button>
 
+
+</div>
+
+
+<!-- =======================================================
+     FULLSCREEN RESULT
+======================================================= -->
+
+<div
+  class="preview-overlay"
+  id="previewOverlay"
+>
+
+  <div
+    class="preview-close"
+  >
+    CLICK ANYWHERE TO CLOSE ×
+  </div>
+
+  <img
+    src=""
+    id="overlayImage"
+    alt="Full scan"
+  >
 
 </div>
 
@@ -908,6 +1168,34 @@ const statusDot =
 const ejectButton =
   document.getElementById(
     "ejectButton"
+  );
+
+
+/* NEW PREVIEW ELEMENTS */
+
+const largePreview =
+  document.getElementById(
+    "largePreview"
+  );
+
+const largePreviewImage =
+  document.getElementById(
+    "largePreviewImage"
+  );
+
+const largePreviewLabel =
+  document.getElementById(
+    "largePreviewLabel"
+  );
+
+const previewOverlay =
+  document.getElementById(
+    "previewOverlay"
+  );
+
+const overlayImage =
+  document.getElementById(
+    "overlayImage"
   );
 
 
@@ -1192,10 +1480,6 @@ function insertObject(obj) {
   );
 
 
-  /*
-     Determine object size
-  */
-
   let insertedWidth;
 
 
@@ -1230,10 +1514,7 @@ function insertObject(obj) {
   }
 
 
-  /*
-     STEP 1:
-     Object lands flat on tray
-  */
+  /* STEP 1 — LAND FLAT */
 
   const targetLeft =
     trayRect.left +
@@ -1278,12 +1559,6 @@ function insertObject(obj) {
     "auto";
 
 
-  /*
-     Perspective makes it look
-     like the paper/book lies down
-     on the metal tray.
-  */
-
   obj.style.transform =
     "perspective(500px) " +
     "rotateX(58deg) " +
@@ -1311,11 +1586,7 @@ function insertObject(obj) {
   );
 
 
-  /*
-     STEP 2:
-     after landing,
-     slide deeper into machine
-  */
+  /* STEP 2 — SLIDE INTO MACHINE */
 
   setTimeout(
     function() {
@@ -1353,10 +1624,7 @@ function insertObject(obj) {
   );
 
 
-  /*
-     STEP 3:
-     Ready to scan
-  */
+  /* STEP 3 — READY */
 
   setTimeout(
     function() {
@@ -1433,6 +1701,9 @@ function startScan() {
     false;
 
 
+  hideLargePreview();
+
+
   scanButton.classList.remove(
     "ready"
   );
@@ -1480,10 +1751,7 @@ function startScan() {
   );
 
 
-  /*
-     Push object slightly farther
-     inside while scanning
-  */
+  /* Push object farther in */
 
   const currentTop =
     parseFloat(
@@ -1535,6 +1803,8 @@ function finishScan() {
   );
 
 
+  /* RESULT ON CRT */
+
   scanResult.classList.add(
     "show"
   );
@@ -1557,7 +1827,7 @@ function finishScan() {
 
   instruction.innerHTML =
     "SCAN COMPLETE<br>" +
-    "EJECT TO SCAN ANOTHER";
+    "CLICK OUTPUT TO ENLARGE";
 
 
   ejectButton.classList.add(
@@ -1572,7 +1842,141 @@ function finishScan() {
   scanned =
     true;
 
+
+  /* NEW:
+     SHOW LARGE RESULT BESIDE SCANNER
+  */
+
+  showLargePreview();
+
 }
+
+
+/* =========================================================
+   LARGE PREVIEW — NEW
+========================================================= */
+
+function showLargePreview() {
+
+  if (!insertedObject) {
+    return;
+  }
+
+
+  const result =
+    insertedObject.dataset.result;
+
+
+  const name =
+    insertedObject.dataset.name;
+
+
+  largePreviewImage.src =
+    result;
+
+
+  overlayImage.src =
+    result;
+
+
+  largePreviewLabel.textContent =
+    "SCANNED OUTPUT / " +
+    name;
+
+
+  /*
+     Small delay makes the CRT result
+     appear first, then the larger
+     output follows.
+  */
+
+  setTimeout(
+    function() {
+
+      largePreview.classList.add(
+        "show"
+      );
+
+    },
+    280
+  );
+
+}
+
+
+/* =========================================================
+   HIDE LARGE PREVIEW
+========================================================= */
+
+function hideLargePreview() {
+
+  largePreview.classList.remove(
+    "show"
+  );
+
+
+  previewOverlay.classList.remove(
+    "show"
+  );
+
+}
+
+
+/* =========================================================
+   CLICK LARGE PREVIEW
+========================================================= */
+
+largePreview.addEventListener(
+  "click",
+  function() {
+
+    if (!scanned) {
+      return;
+    }
+
+
+    previewOverlay.classList.add(
+      "show"
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CLOSE FULLSCREEN
+========================================================= */
+
+previewOverlay.addEventListener(
+  "click",
+  function() {
+
+    previewOverlay.classList.remove(
+      "show"
+    );
+
+  }
+);
+
+
+/* ESC ALSO CLOSES */
+
+document.addEventListener(
+  "keydown",
+  function(e) {
+
+    if (
+      e.key === "Escape"
+    ) {
+
+      previewOverlay.classList.remove(
+        "show"
+      );
+
+    }
+
+  }
+);
 
 
 /* =========================================================
@@ -1608,6 +2012,13 @@ function ejectObject() {
     insertedObject;
 
 
+  /* NEW:
+     LARGE RESULT DISAPPEARS
+  */
+
+  hideLargePreview();
+
+
   scanResult.classList.remove(
     "show"
   );
@@ -1636,11 +2047,6 @@ function ejectObject() {
   );
 
 
-  /*
-     First:
-     machine pushes object outward
-  */
-
   const currentTop =
     parseFloat(
       obj.style.top
@@ -1667,10 +2073,6 @@ function ejectObject() {
     "scale(.98) " +
     "scaleY(.88)";
 
-
-  /*
-     Then return to desk
-  */
 
   setTimeout(
     function() {
@@ -1708,6 +2110,14 @@ function ejectObject() {
       scanResult.src =
         "";
 
+
+      largePreviewImage.src =
+        "";
+
+
+      overlayImage.src =
+        "";
+
     },
     700
   );
@@ -1729,11 +2139,6 @@ function restoreObject(obj) {
   obj.style.transition =
     "all .5s cubic-bezier(.2,.8,.2,1)";
 
-
-  /*
-     Remove all inline positioning.
-     Original CSS position returns.
-  */
 
   obj.style.width =
     "";
@@ -1777,7 +2182,7 @@ function restoreObject(obj) {
 
 
 /* =========================================================
-   DOUBLE CLICK SCREEN = EJECT
+   DOUBLE CLICK CRT = EJECT
 ========================================================= */
 
 crt.addEventListener(
